@@ -8,10 +8,14 @@ import {
 } from "react-native";
 import { Ionicons, Entypo, FontAwesome } from "@expo/vector-icons";
 import Modal from "react-native-modal";
+import AddSociety from "../screens/HomeScreen/AddSociety";
+import { useNavigation } from "@react-navigation/native";
 
 const AddButton = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+  const [addSocietyModal, setAddSocietyModal] = useState(false);
+  const navigation = useNavigation();
 
   //Instansation de la class Animated pour utiliser Animer l'icone
   const mode = new Animated.Value(0);
@@ -68,7 +72,12 @@ const AddButton = () => {
           </View>
 
           <View style={{ marginVertical: 15 }}>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("AddSociety");
+                setModalVisible(false);
+              }}
+            >
               <View style={styles.modalButon}>
                 <View style={styles.iconBordure}>
                   <FontAwesome name="building-o" size={24} color="black" />
@@ -76,7 +85,12 @@ const AddButton = () => {
                 <Text style={styles.textButton}>Ajouter une societé</Text>
               </View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                navigation.navigate("AddRDV");
+                setModalVisible(false);
+              }}
+            >
               <View style={styles.modalButon}>
                 <View style={styles.iconBordure}>
                   <Ionicons name="calendar-sharp" size={24} color="black" />
