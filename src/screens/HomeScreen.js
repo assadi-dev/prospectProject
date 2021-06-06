@@ -14,7 +14,7 @@ import CardListViewRDV from "../components/CardListViewRDV";
 const HomeScreen = () => {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="blue" />
+      <StatusBar barStyle="light-content" />
 
       <SafeAreaView>
         <View style={{ paddingHorizontal: 15 }}>
