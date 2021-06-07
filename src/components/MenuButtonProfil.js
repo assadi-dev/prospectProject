@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Text, View, StyleSheet, Animated } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import Ripple from "react-native-material-ripple";
 
 export class MenuButtonProfil extends Component {
   iconSize = new Animated.Value(1);
@@ -32,15 +33,24 @@ export class MenuButtonProfil extends Component {
   render() {
     const sizeButton = { transform: [{ scale: this.iconSize }] };
 
+    const { navigation, routeName, title, icon } = this.props;
+
     return (
-      <View style={styles.buttonContainer}>
+      <Ripple
+        style={styles.buttonContainer}
+        onPress={() => {
+          this.handlePress;
+          navigation.navigate(routeName);
+        }}
+        rippleCentered={false}
+        rippleColor="grey"
+      >
         <Animated.View style={[styles.iconContainer, sizeButton]}>
-          <TouchableWithoutFeedback onPress={this.handlePress}>
-            {this.props.icon}
-          </TouchableWithoutFeedback>
+          {icon}
         </Animated.View>
-        <Text style={styles.titleMenu}> {this.props.title}</Text>
-      </View>
+
+        <Text style={styles.titleMenu}> {title}</Text>
+      </Ripple>
     );
   }
 }
@@ -70,7 +80,11 @@ const styles = StyleSheet.create({
   iconContainer: {
     backgroundColor: "lightblue",
     borderRadius: 100,
-    padding: 10,
+    padding: 5,
+    width: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
   shadow: {
     shadowColor: "#7F5DF0",

@@ -6,6 +6,7 @@ import Tabs from "./src/navigation/Tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import EmptyScreen from "./src/screens/EmptyScreen";
 import AddSociety from "./src/screens/HomeScreen/AddSociety";
+import ListEntrprise from "./src/screens/ListEntrprise";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -33,6 +34,11 @@ export default function App() {
           options={{ headerShown: true, headerTitle: "Ajouter Rendez-vous" }}
           name="AddRDV"
           component={EmptyScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: true, headerTitle: "Mes Entreprises" }}
+          name="listEntreprises"
+          component={ListEntrprise}
         />
       </Stack.Navigator>
     </NavigationContainer>

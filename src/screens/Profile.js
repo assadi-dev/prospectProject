@@ -11,9 +11,13 @@ import {
 import { FontAwesome, Feather, Ionicons, AntDesign } from "@expo/vector-icons";
 import MenuButtonProfil from "../components/MenuButtonProfil";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
   const colorIcon = "blue";
+  const navigation = useNavigation();
+
+  //navigation.navigate("listEntreprises");
 
   return (
     <View style={styles.container}>
@@ -39,6 +43,8 @@ const Profile = () => {
                 icon={
                   <FontAwesome name="building-o" size={24} color={colorIcon} />
                 }
+                navigation={navigation}
+                routeName="listEntreprises"
               />
 
               <MenuButtonProfil
@@ -76,7 +82,7 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "blue",
+    backgroundColor: "rgb(24, 49, 160)",
   },
   bodyCard: {
     minHeight: "100%",

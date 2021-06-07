@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
 
   icon: {
     borderRadius: 100,
-    backgroundColor: "blue",
+    backgroundColor: "purple",
     padding: 10,
     height: 50,
     width: 50,

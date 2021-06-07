@@ -76,7 +76,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "blue",
+    backgroundColor: "rgb(24, 49, 160)",
   },
   topCard: {
     backgroundColor: "rgba(255,255,255,0.5)",
