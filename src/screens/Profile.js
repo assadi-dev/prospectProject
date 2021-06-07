@@ -52,14 +52,18 @@ const Profile = () => {
                 icon={
                   <Ionicons name="calendar-sharp" size={24} color={colorIcon} />
                 }
+                navigation={navigation}
+                routeName="listRdv"
               />
             </View>
             <View style={styles.rowSection}>
               <MenuButtonProfil
-                title="Mes Coordonées"
+                title="Mes Informations"
                 icon={
                   <FontAwesome name="wpforms" size={24} color={colorIcon} />
                 }
+                navigation={navigation}
+                routeName="informations"
               />
               <MenuButtonProfil
                 title="A propos"
@@ -70,6 +74,8 @@ const Profile = () => {
                     color={colorIcon}
                   />
                 }
+                navigation={navigation}
+                routeName="about"
               />
             </View>
           </View>

@@ -31,11 +31,13 @@ const listDataS = [
 
 const ListEntrprise = () => {
   const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
-  const [listData, setListData] = useState(
+  /*const [listData, setListData] = useState(
     Array(20)
       .fill("")
       .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))
-  );
+    );*/
+
+  const [listData, setListData] = useState(listDataS);
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -49,11 +51,11 @@ const ListEntrprise = () => {
     const prevIndex = listData.findIndex((item) => item.key === rowKey);
     newData.splice(prevIndex, 1);
     setListData(newData);
-    console.log("delete");
+    //sconsole.log("delete");
   };
   const [isRowOpen, setIsRowOpen] = useState(false);
   const onRowDidOpen = () => {
-    console.log("This row opened");
+    // console.log("This row opened");
     setIsRowOpen(true);
   };
 

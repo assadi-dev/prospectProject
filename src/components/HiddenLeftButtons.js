@@ -15,7 +15,7 @@ class HiddenLeftButtons extends Component {
     Animated.timing(this.state.fadeAnimation, {
       toValue: 1,
       duration: 800,
-      delay: 2000,
+      delay: 1000,
       useNativeDriver: false,
     }).start();
   };
@@ -31,9 +31,7 @@ class HiddenLeftButtons extends Component {
   componentDidMount = () => {
     this.fadeIn();
   };
-  componentDidUpdate = () => {
-    //  this.fadeIn();
-  };
+
   componentWillUnmount = () => {
     this.fadeOut;
   };
@@ -59,7 +57,6 @@ class HiddenLeftButtons extends Component {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "orange",
-
             padding: 2,
           }}
           onPress={onClose}
@@ -76,7 +73,7 @@ class HiddenLeftButtons extends Component {
               ],
             }}
           >
-            <Feather name="edit" size={24} color="white" />
+            <Feather name="eye" size={24} color="white" />
           </Animated.View>
         </TouchableOpacity>
 

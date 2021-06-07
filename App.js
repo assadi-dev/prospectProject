@@ -7,6 +7,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import EmptyScreen from "./src/screens/EmptyScreen";
 import AddSociety from "./src/screens/HomeScreen/AddSociety";
 import ListEntrprise from "./src/screens/ListEntrprise";
+import ListRendezVous from "./src/screens/HomeScreen/ListRendezVous";
+import Informations from "./src/screens/Informations";
+import About from "./src/screens/About";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -39,6 +42,21 @@ export default function App() {
           options={{ headerShown: true, headerTitle: "Mes Entreprises" }}
           name="listEntreprises"
           component={ListEntrprise}
+        />
+        <Stack.Screen
+          options={{ headerShown: true, headerTitle: "Mes Rendez-vous" }}
+          name="listRdv"
+          component={ListRendezVous}
+        />
+        <Stack.Screen
+          options={{ headerShown: true, headerTitle: "Mes Informations" }}
+          name="informations"
+          component={Informations}
+        />
+        <Stack.Screen
+          options={{ headerShown: true, headerTitle: "A Propos" }}
+          name="about"
+          component={About}
         />
       </Stack.Navigator>
     </NavigationContainer>
