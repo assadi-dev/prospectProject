@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, Animated } from "react-native";
+import { View, Text, Animated, TouchableOpacity } from "react-native";
 import Ripple from "react-native-material-ripple";
 import { Feather } from "@expo/vector-icons";
 
@@ -8,14 +8,14 @@ class HiddenLeftButtons extends Component {
     super(props);
     this.state = {
       fadeAnimation: new Animated.Value(0),
-      iconSize: new Animated.Value(0),
     };
   }
 
   fadeIn = () => {
     Animated.timing(this.state.fadeAnimation, {
       toValue: 1,
-      duration: 2800,
+      duration: 800,
+      delay: 2000,
       useNativeDriver: false,
     }).start();
   };
@@ -31,12 +31,16 @@ class HiddenLeftButtons extends Component {
   componentDidMount = () => {
     this.fadeIn();
   };
+  componentDidUpdate = () => {
+    //  this.fadeIn();
+  };
   componentWillUnmount = () => {
     this.fadeOut;
   };
 
   render() {
     const { fadeAnimation, iconSize } = this.state;
+    const { onClose, swipeAnimatedValue, onDelete } = this.props;
     return (
       <Animated.View
         style={{
@@ -48,58 +52,62 @@ class HiddenLeftButtons extends Component {
           opacity: fadeAnimation,
         }}
       >
-        <Animated.View
+        <TouchableOpacity
           style={{
-            height: "100%",
             width: "20%",
+            height: "100%",
+            alignItems: "center",
+            justifyContent: "center",
             backgroundColor: "orange",
-            alignSelf: "flex-start",
-            opacity: fadeAnimation,
-          }}
-        >
-          <Ripple
-            style={{
-              width: "100%",
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 2,
-            }}
-            rippleCentered={true}
-            onPress={() => alert("edit")}
-          >
-            <Animated.View style={{ transform: [{ scale: iconSize }] }}>
-              <Feather name="edit" size={24} color="white" />
-            </Animated.View>
-          </Ripple>
-        </Animated.View>
 
-        <Animated.View
+            padding: 2,
+          }}
+          onPress={onClose}
+        >
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  scale: swipeAnimatedValue.interpolate({
+                    inputRange: [-90, 45],
+                    outputRange: [1, 0],
+                  }),
+                },
+              ],
+            }}
+          >
+            <Feather name="edit" size={24} color="white" />
+          </Animated.View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={{
-            height: "100%",
             width: "20%",
+            height: "100%",
             backgroundColor: "red",
-            alignSelf: "flex-end",
             borderTopRightRadius: 6,
             borderBottomRightRadius: 6,
-            opacity: fadeAnimation,
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 2,
           }}
+          onPress={onDelete}
         >
-          <Ripple
+          <Animated.View
             style={{
-              width: "100%",
-              height: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 2,
+              transform: [
+                {
+                  scale: swipeAnimatedValue.interpolate({
+                    inputRange: [-90, 45],
+                    outputRange: [1, 0],
+                  }),
+                },
+              ],
             }}
-            rippleCentered={true}
           >
-            <Animated.View style={{ transform: [{ scale: iconSize }] }}>
-              <Feather name="trash-2" size={24} color="white" />
-            </Animated.View>
-          </Ripple>
-        </Animated.View>
+            <Feather name="trash-2" size={24} color="white" />
+          </Animated.View>
+        </TouchableOpacity>
       </Animated.View>
     );
   }

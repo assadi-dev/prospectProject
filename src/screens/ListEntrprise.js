@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import {
   StyleSheet,
   Text,
@@ -7,42 +8,71 @@ import {
   SafeAreaView,
   Image,
   StatusBar,
-  TouchableWithoutFeedback,
+  Animated,
+  TouchableOpacity,
 } from "react-native";
+import Ripple from "react-native-material-ripple";
 import { SwipeListView } from "react-native-swipe-list-view";
 import CardListViewEntreprise from "../components/CardListViewEntreprise";
-import HiddenLeftButtons from "../components/HiddenLeftButtons";
+import HiddenButtons from "../components/HiddenButtons";
+import HiddenLeftButton from "../components/HiddenLeftButtons";
+import { Feather } from "@expo/vector-icons";
 
-const listData = [
-  { id: 1, title: "Axiom", checked: false },
-  { id: 2, title: "Axa", checked: true },
-  { id: 3, title: "Groupama", checked: true },
-  { id: 4, title: "Credit Agricole", checked: false },
-  { id: 5, title: "Credit Agricole", checked: false },
-  { id: 6, title: "Credit Agricole", checked: false },
-  { id: 7, title: "Credit Agricole", checked: false },
-  { id: 8, title: "Credit Agricole", checked: false },
+const listDataS = [
+  { key: "1", title: "Axiom", checked: false },
+  { key: "2", title: "Axa", checked: true },
+  { key: "3", title: "Groupama", checked: true },
+  { key: "4", title: "Credit Agricole", checked: false },
+  { key: "5", title: "Credit Agricole", checked: false },
+  { key: "6", title: "Credit Agricole", checked: false },
+  { key: "7", title: "Credit Agricole", checked: false },
+  { key: "8", title: "Credit Agricole", checked: false },
 ];
 
-const renderItem = (data, rowMap) => {
-  return <CardListViewEntreprise />;
-};
-
-const renderHiddenItem = (data, rowMap) => {
-  return (
-    <TouchableWithoutFeedback onPress={console.log("close")}>
-      <HiddenLeftButtons id={data} rowMap={rowMap} />
-    </TouchableWithoutFeedback>
-  );
-};
-
-const closeRows = (rowMap, rowKey) => {
-  if (rowMap[rowKey]) {
-    rowMap[rowKey].closeRow();
-  }
-};
-
 const ListEntrprise = () => {
+  const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
+  const [listData, setListData] = useState(
+    Array(20)
+      .fill("")
+      .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))
+  );
+
+  const closeRow = (rowMap, rowKey) => {
+    if (rowMap[rowKey]) {
+      rowMap[rowKey].closeRow();
+    }
+  };
+
+  const deleteRow = (rowMap, rowKey) => {
+    closeRow(rowMap, rowKey);
+    const newData = [...listData];
+    const prevIndex = listData.findIndex((item) => item.key === rowKey);
+    newData.splice(prevIndex, 1);
+    setListData(newData);
+    console.log("delete");
+  };
+  const [isRowOpen, setIsRowOpen] = useState(false);
+  const onRowDidOpen = () => {
+    console.log("This row opened");
+    setIsRowOpen(true);
+  };
+
+  const renderItem = (data, rowMap) => {
+    return <CardListViewEntreprise />;
+  };
+
+  const renderHiddenItem = (data, rowMap) => {
+    return (
+      <HiddenLeftButton
+        data={data}
+        rowMap={rowMap}
+        onClose={() => closeRow(rowMap, data.item.key)}
+        onDelete={() => deleteRow(rowMap, data.item.key)}
+        isRowOpen={isRowOpen}
+      />
+    );
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -67,10 +97,16 @@ const ListEntrprise = () => {
             data={listData}
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
-            keyExtractor={listData.id}
+            keyExtractor={listData.key}
             showsVerticalScrollIndicator={false}
             rightOpenValue={-136}
             disableRightSwipe={true}
+            previewRowKey={"0"}
+            previewOpenValue={-40}
+            previewOpenDelay={3000}
+            onRowOpen={onRowDidOpen}
+            rightActivationValue={-200}
+            rightActionValue={0}
           />
         </View>
       </SafeAreaView>

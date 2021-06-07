@@ -5,6 +5,8 @@ import {
   StyleSheet,
   Animated,
   TouchableWithoutFeedback,
+  TouchableOpacity,
+  TouchableHighlight,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
@@ -62,7 +64,10 @@ class CardListViewEntreprise extends Component {
       <Animated.View
         style={[styles.cardContainer, { opacity: this.state.fadeAnimation }]}
       >
-        <View style={styles.cardBody}>
+        <TouchableHighlight
+          style={styles.cardBody}
+          onPress={() => console.log("")}
+        >
           <View style={styles.content}>
             <TouchableWithoutFeedback onPress={this.handleCheck}>
               <Animated.View style={sizeButton}>
@@ -89,7 +94,7 @@ class CardListViewEntreprise extends Component {
               </Text>
             </View>
           </View>
-        </View>
+        </TouchableHighlight>
       </Animated.View>
     );
   }
