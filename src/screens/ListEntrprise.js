@@ -10,6 +10,7 @@ import {
   StatusBar,
   Animated,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import Ripple from "react-native-material-ripple";
 import { SwipeListView } from "react-native-swipe-list-view";
@@ -81,13 +82,20 @@ const ListEntrprise = () => {
       <SafeAreaView>
         <View style={styles.topCard}>
           <View style={{ width: "77%" }}>
-            <Text style={[styles.colorText, styles.titleText]}>50</Text>
-
-            <Text
-              style={[styles.colorText, styles.infoText, { marginBottom: 5 }]}
-            >
-              Vous avez prospecté 10 sur 50
+            <Text style={[styles.colorText, { marginBottom: 10 }]}>
+              <Text style={[styles.colorText, styles.titleText]}>50</Text>{" "}
+              Entreprises enregistrées
             </Text>
+
+            <View style={styles.inputContainer}>
+              <Feather name="search" size={14} color="rgba(255,255,255,0.5)" />
+              <TextInput
+                style={styles.input}
+                placeholder="Rechercher une entreprise"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+                selectionColor="rgba(255,255,255,0.5)"
+              />
+            </View>
           </View>
           <Image
             source={require("../assets/icons/reminders_icons.png")}
@@ -160,5 +168,17 @@ const styles = StyleSheet.create({
     position: "relative",
     top: 60,
     marginBottom: 10,
+  },
+  inputContainer: {
+    backgroundColor: "rgba(255,255,255,0.3)",
+    padding: 10,
+    width: "90%",
+    borderRadius: 10,
+    flexDirection: "row",
+  },
+  input: {
+    color: "#fff",
+    marginLeft: 3,
+    width: "100%",
   },
 });

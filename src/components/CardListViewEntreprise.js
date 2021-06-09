@@ -33,12 +33,17 @@ class CardListViewEntreprise extends Component {
     Animated.timing(this.state.fadeAnimation, {
       toValue: 0,
       duration: 800,
+      delay: 500,
       useNativeDriver: false,
     }).start();
   };
 
   componentDidMount() {
     this.fadeIn();
+  }
+
+  componentWillUnmount() {
+    this.fadeOut();
   }
 
   handleCheck = () => {
