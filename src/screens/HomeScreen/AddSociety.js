@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  MaskedViewComponent,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -24,8 +25,8 @@ const AddSociety = () => {
       dotStyle={{ marginBottom: 100 }}
       activeDotStyle={{ marginBottom: 100 }}
       buttonWrapperStyle={{
-        flexDirection: "column-reverse",
-        justifyContent: "flex-start",
+        flexDirection: "column",
+        justifyContent: "flex-end",
       }}
       style={styles.wrapper}
       loop={false}
@@ -122,6 +123,13 @@ const AddSociety = () => {
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
                 keyboardType="number-pad"
+              />
+              <TextInput
+                placeholder="Adress email (facultatif)"
+                style={styles.input}
+                clearButtonMode="always"
+                placeholderTextColor={colorPlaceHolder}
+                keyboardType="email-address"
               />
             </View>
           </ScrollView>
