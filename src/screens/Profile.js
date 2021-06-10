@@ -111,10 +111,10 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -90 }],
     shadowColor: "rgba(24,97,130,1)",
     shadowOffset: {
-      width: 8,
-      height: 5,
+      width: 1,
+      height: 1,
     },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.5,
     shadowRadius: 3.5,
     elevation: 5,
   },

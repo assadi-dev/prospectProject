@@ -8,22 +8,33 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
-  MaskedViewComponent,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import { MaterialIcons } from "@expo/vector-icons";
 import SwipeButton from "./SwipeButton";
 import { FontAwesome, Feather, Ionicons, AntDesign } from "@expo/vector-icons";
+import Ripple from "react-native-material-ripple";
 
 const AddSociety = () => {
   const windowWidth = Dimensions.get("window").width;
   const errorInput = { borderColor: "red", borderWidth: 1 };
   const colorIcon = "#fff";
   const colorPlaceHolder = "rgba(255,255,255,0.5)";
+  const [inputValues, setInputValue] = useState({
+    name: "",
+    activity: "",
+    phone: "",
+    address: "",
+    city: "",
+    zip: "",
+    email: "",
+  });
+
+  console.log(inputValues);
   return (
     <Swiper
-      dotStyle={{ marginBottom: 100 }}
-      activeDotStyle={{ marginBottom: 100 }}
+      dotStyle={{ marginBottom: 100, display: "none" }}
+      activeDotStyle={{ marginBottom: 100, display: "none" }}
       buttonWrapperStyle={{
         flexDirection: "column",
         justifyContent: "flex-end",
@@ -31,7 +42,7 @@ const AddSociety = () => {
       style={styles.wrapper}
       loop={false}
       scrollEnabled={false}
-      showsButtons={true}
+      showsButtons={inputValues.name ? true : false}
       nextButton={
         <SwipeButton
           style={[styles.nextButton, { display: "" }]}
@@ -71,12 +82,19 @@ const AddSociety = () => {
               style={[styles.input]}
               clearButtonMode="always"
               placeholderTextColor={colorPlaceHolder}
+              name="name"
+              onChangeText={(name) =>
+                setInputValue({ ...inputValues, name: name })
+              }
             />
             <TextInput
               placeholder="Secteur d'activité"
               style={styles.input}
               clearButtonMode="always"
               placeholderTextColor={colorPlaceHolder}
+              onChangeText={(activity) =>
+                setInputValue({ ...inputValues, activity: activity })
+              }
             />
             <TextInput
               placeholder="Numéro de téléphone"
@@ -84,6 +102,9 @@ const AddSociety = () => {
               clearButtonMode="always"
               keyboardType="phone-pad"
               placeholderTextColor={colorPlaceHolder}
+              onChangeText={(phone) =>
+                setInputValue({ ...inputValues, phone: phone })
+              }
             />
           </View>
         </SafeAreaView>
@@ -110,12 +131,18 @@ const AddSociety = () => {
                 style={[styles.input]}
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
+                onChangeText={(address) =>
+                  setInputValue({ ...inputValues, address: address })
+                }
               />
               <TextInput
                 placeholder="Ville"
                 style={styles.input}
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
+                onChangeText={(city) =>
+                  setInputValue({ ...inputValues, city: city })
+                }
               />
               <TextInput
                 placeholder="Code Postale"
@@ -123,6 +150,9 @@ const AddSociety = () => {
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
                 keyboardType="number-pad"
+                onChangeText={(zip) =>
+                  setInputValue({ ...inputValues, zip: zip })
+                }
               />
               <TextInput
                 placeholder="Adress email (facultatif)"
@@ -130,13 +160,55 @@ const AddSociety = () => {
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
                 keyboardType="email-address"
+                onChangeText={(email) =>
+                  setInputValue({ ...inputValues, email: email })
+                }
               />
             </View>
           </ScrollView>
         </SafeAreaView>
       </View>
       <View testID="Simple" style={styles.slide3}>
-        <Text style={styles.text}>Resumé</Text>
+        <SafeAreaView style={styles.slideContent}>
+          <View style={styles.presentationRow}>
+            <Image
+              style={styles.imageResume}
+              source={require("../../assets/icons/id-card.png")}
+            />
+            <View style={styles.resumSection}>
+              <Text
+                numberOfLines={2}
+                style={[styles.titleResume, styles.textColor]}
+              >
+                {inputValues.name}
+              </Text>
+              <Text numberOfLines={2} style={styles.textResume}>
+                {inputValues.activity}
+              </Text>
+              <View style={styles.hairLine} />
+              <Text style={styles.textResume}>{inputValues.phone}</Text>
+
+              <Text style={styles.textResume}>{inputValues.email}</Text>
+            </View>
+          </View>
+          <View style={styles.addressRow}>
+            <View style={styles.addressCard}>
+              <Text numberOfLines={2} style={styles.addressResume}>
+                {" "}
+                {inputValues.address}{" "}
+              </Text>
+              <Text numberOfLines={2} style={styles.addressResume}>
+                {inputValues.city}
+              </Text>
+              <Text style={styles.addressResume}>{inputValues.zip}</Text>
+            </View>
+          </View>
+          <Ripple>
+            <View style={styles.addButton}>
+              <Text style={styles.textButton}>Enregistrer</Text>
+            </View>
+          </Ripple>
+        </SafeAreaView>
       </View>
     </Swiper>
   );
@@ -196,6 +268,94 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "cover",
+  },
+  slideContent: {
+    height: "75%",
+    alignItems: "center",
+    width: "90%",
+  },
+  presentationRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  imageResume: {
+    width: 80,
+    height: 80,
+    resizeMode: "cover",
+  },
+  resumSection: {
+    marginBottom: 5,
+    maxWidth: "65%",
+  },
+
+  titleResume: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginBottom: 10,
+  },
+  textResume: {
+    fontSize: 18,
+    color: "rgba(255,255,255,0.7)",
+  },
+  addressResume: {
+    fontSize: 20,
+    color: "rgba(255,255,255,0.7)",
+    marginVertical: 5,
+  },
+  hairLine: {
+    height: 2,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    marginVertical: 15,
+    width: "90%",
+    alignSelf: "center",
+    borderRadius: 50,
+  },
+  addressRow: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 35,
+  },
+  addressCard: {
+    paddingHorizontal: 15,
+    paddingVertical: 25,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 10,
+    width: "90%",
+    alignItems: "center",
+    marginBottom: 25,
+    shadowColor: "rgba(0, 0, 0, 0.6)",
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 1,
+  },
+  textColor: {
+    color: "#fff",
+  },
+  addButton: {
+    padding: 20,
+    width: 130,
+    backgroundColor: "#20c997",
+    borderRadius: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "rgba(0, 0, 0, 0.8)",
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
+    shadowOpacity: 0.5,
+    elevation: 1,
+  },
+  textButton: {
+    fontWeight: "bold",
+    color: "#fff",
+    fontSize: 15,
   },
 });
 
