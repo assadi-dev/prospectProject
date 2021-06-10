@@ -30,7 +30,6 @@ const AddSociety = () => {
     email: "",
   });
 
-  console.log(inputValues);
   return (
     <Swiper
       dotStyle={{ marginBottom: 100, display: "none" }}
