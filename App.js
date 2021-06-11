@@ -10,6 +10,7 @@ import ListEntrprise from "./src/screens/ListEntrprise";
 import ListRendezVous from "./src/screens/HomeScreen/ListRendezVous";
 import Informations from "./src/screens/Informations";
 import About from "./src/screens/About";
+import AddRDV from "./src/screens/HomeScreen/AddRDV";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -36,7 +37,7 @@ export default function App() {
         <Stack.Screen
           options={{ headerShown: true, headerTitle: "Ajouter Rendez-vous" }}
           name="AddRDV"
-          component={EmptyScreen}
+          component={AddRDV}
         />
         <Stack.Screen
           options={{ headerShown: true, headerTitle: "Mes Entreprises" }}

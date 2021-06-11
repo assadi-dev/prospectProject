@@ -88,7 +88,7 @@ const ListEntrprise = () => {
             </Text>
 
             <View style={styles.inputContainer}>
-              <Feather name="search" size={14} color="rgba(255,255,255,0.5)" />
+              <Feather  name="search" size={14} color="rgba(255,255,255,0.5)" />
               <TextInput
                 style={styles.input}
                 placeholder="Rechercher une entreprise"
@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     width: "90%",
     borderRadius: 10,
     flexDirection: "row",
+    alignItems:"center"
   },
   input: {
     color: "#fff",
