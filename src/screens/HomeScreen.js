@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,10 +9,28 @@ import {
   StatusBar,
   Image,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import CardListViewEntreprise from "../components/CardListViewEntreprise";
 import CardListViewRDV from "../components/CardListViewRDV";
+import { get_entreprise_unCheck } from "../redux/action/EntrepriseAction";
 
 const HomeScreen = () => {
+  const dispatch = useDispatch();
+  const userConnect = useSelector((state) => state.authenticateReducer);
+  const listEntreprise = useSelector((state) => state.entrepriseReducer);
+  const [token, setToken] = useState("");
+  const [uncheckedEntreprise, setUncheckedEntreprise] = useState([]);
+
+  useEffect(() => {
+    if (userConnect) {
+      setToken(userConnect.accessToken);
+
+      setUncheckedEntreprise(listEntreprise.unCheckCollection);
+    }
+    dispatch(get_entreprise_unCheck(token));
+  }, [dispatch, listEntreprise.isLoading]);
+
+  // console.log(listEntreprise);
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -36,10 +55,12 @@ const HomeScreen = () => {
               <Text
                 style={[styles.colorText, styles.infoText, { marginBottom: 5 }]}
               >
-                Vous avez passé 5 Entretiens
+                {`Vous avez passé 5 Entretiens`}
               </Text>
               <Text style={[styles.colorText, styles.infoText]}>
-                Vous avez prospecté 5 entreprises
+                {` Vous avez prospecté ${
+                  uncheckedEntreprise ? uncheckedEntreprise.length : 0
+                } entreprises`}
               </Text>
             </View>
             <Image
@@ -55,8 +76,12 @@ const HomeScreen = () => {
                 Derniere(s) Entreprises Ajouté
               </Text>
               <View style={{ padding: 5 }}>
-                <CardListViewEntreprise />
-                <CardListViewEntreprise />
+                {listEntreprise.unCheckCollection &&
+                  listEntreprise.unCheckCollection
+                    .map((item) => (
+                      <CardListViewEntreprise key={item.id} nom={item.nom} />
+                    ))
+                    .slice(0, 5)}
               </View>
               <Text style={{ color: "grey", fontWeight: "bold" }}>
                 Vos Prochaines Entretiens

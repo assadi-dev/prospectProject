@@ -26,22 +26,29 @@ const ListEntrprise = () => {
 
   const listEntreprise = useSelector((state) => state.entrepriseReducer);
 
-  const [listData, setListData] = useState({
-    key: null,
-    nom: null,
-    checked: null,
-  });
+  const [listData, setListData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     (async () => {
-      const listEntrepriseData = await listEntreprise.data.map((data) => ({
-        key: data.id.toString(),
-        nom: data.nom,
-        checked: data.checked,
-      }));
-      setListData(listEntrepriseData);
+      if (listEntreprise) {
+        const listEntrepriseData = await listEntreprise.dataCollection.map(
+          (data) => ({
+            key: data.id.toString(),
+            nom: data.nom,
+            checked: data.checked,
+          })
+        );
+        const array = listEntrepriseData.filter((item) => {
+          return item.nom
+            .toLowerCase()
+            .includes(searchTerm.toLocaleLowerCase());
+        });
+
+        setListData(array);
+      }
     })();
-  }, []);
+  }, [listEntreprise.isLoading, searchTerm]);
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -93,9 +100,11 @@ const ListEntrprise = () => {
           <View style={{ width: "77%" }}>
             <Text style={[styles.colorText, { marginBottom: 10 }]}>
               <Text style={[styles.colorText, styles.titleText]}>
-                {listData.length ? listData.length : " "}
+                {listEntreprise.dataCollection.length
+                  ? listEntreprise.dataCollection.length
+                  : " "}
               </Text>{" "}
-              {listData.length
+              {listEntreprise.dataCollection.length
                 ? `Entreprises enregistrées`
                 : `Aucun entreprises enregistrées`}
             </Text>
@@ -107,6 +116,7 @@ const ListEntrprise = () => {
                 placeholder="Rechercher une entreprise"
                 placeholderTextColor="rgba(255,255,255,0.5)"
                 selectionColor="rgba(255,255,255,0.5)"
+                onChangeText={(term) => setSearchTerm(term)}
               />
             </View>
           </View>
@@ -116,7 +126,12 @@ const ListEntrprise = () => {
           />
         </View>
         <View style={styles.sectionList}>
-          {listData.length && (
+          {searchTerm ? (
+            <View>
+              <Text>{`${listData.length} entreprise(s) trouvée(s)`}</Text>
+            </View>
+          ) : null}
+          {listData && (
             <SwipeListView
               data={listData}
               renderItem={renderItem}

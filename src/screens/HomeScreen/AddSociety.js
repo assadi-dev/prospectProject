@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   add_entreprise,
   get_entreprise,
+  get_entreprise_unCheck,
 } from "../../redux/action/EntrepriseAction";
 import { useNavigation } from "@react-navigation/native";
 
@@ -43,11 +44,10 @@ const AddSociety = () => {
   const date = new Date();
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const authenticateUser = useSelector((state) => state.authenticateReducer);
-  useEffect(() => {}, []);
-
-  const dispatch = useDispatch();
+  useEffect(() => {}, [dispatch]);
 
   const submitData = async () => {
     let data = {
@@ -69,8 +69,9 @@ const AddSociety = () => {
     try {
       if (authenticateUser.accessToken) {
         await dispatch(add_entreprise(authenticateUser.accessToken, data));
+        await dispatch(get_entreprise_unCheck(authenticateUser.accessToken));
         await dispatch(get_entreprise(authenticateUser.accessToken));
-        await setInputValue(defautValue);
+        // await setInputValue(defautValue);
         navigation.navigate("Home");
       }
     } catch (error) {
