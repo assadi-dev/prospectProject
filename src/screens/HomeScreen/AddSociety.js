@@ -26,7 +26,7 @@ const AddSociety = () => {
   const errorInput = { borderColor: "red", borderWidth: 1 };
   const colorIcon = "#fff";
   const colorPlaceHolder = "rgba(255,255,255,0.5)";
-  const [inputValues, setInputValue] = useState({
+  const defautValue = {
     name: "",
     activity: "",
     phone: "",
@@ -37,7 +37,8 @@ const AddSociety = () => {
     description: "",
     email: "",
     siteWeb: "",
-  });
+  };
+  const [inputValues, setInputValue] = useState(defautValue);
 
   const date = new Date();
 
@@ -69,6 +70,7 @@ const AddSociety = () => {
       if (authenticateUser.accessToken) {
         await dispatch(add_entreprise(authenticateUser.accessToken, data));
         await dispatch(get_entreprise(authenticateUser.accessToken));
+        await setInputValue(defautValue);
         navigation.navigate("Home");
       }
     } catch (error) {
