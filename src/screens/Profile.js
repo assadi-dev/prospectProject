@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Text,
   View,
@@ -16,8 +16,6 @@ import { useNavigation } from "@react-navigation/native";
 const Profile = () => {
   const colorIcon = "blue";
   const navigation = useNavigation();
-
-  //navigation.navigate("listEntreprises");
 
   return (
     <View style={styles.container}>

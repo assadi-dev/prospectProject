@@ -14,7 +14,7 @@ class CardListViewEntreprise extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isChecked: false,
+      isChecked: this.props.checked,
       fadeAnimation: new Animated.Value(0),
     };
   }
@@ -65,6 +65,10 @@ class CardListViewEntreprise extends Component {
     const sizeButton = {
       transform: [{ scale: this.buttonSize }],
     };
+
+    const { id, nom } = this.props;
+    const { isChecked } = this.state;
+
     return (
       <Animated.View
         style={[styles.cardContainer, { opacity: this.state.fadeAnimation }]}
@@ -76,7 +80,7 @@ class CardListViewEntreprise extends Component {
           <View style={styles.content}>
             <TouchableWithoutFeedback onPress={this.handleCheck}>
               <Animated.View style={sizeButton}>
-                {this.state.isChecked ? (
+                {isChecked ? (
                   <Ionicons name="checkmark-circle" size={28} color="green" />
                 ) : (
                   <MaterialIcons
@@ -95,7 +99,7 @@ class CardListViewEntreprise extends Component {
                     : styles.textTitle
                 }
               >
-                Axiom
+                {nom}
               </Text>
             </View>
           </View>

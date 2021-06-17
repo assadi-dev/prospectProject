@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import SwipeButton from "./SwipeButton";
 import { FontAwesome, Feather, Ionicons, AntDesign } from "@expo/vector-icons";
 import Ripple from "react-native-material-ripple";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  add_entreprise,
+  get_entreprise,
+} from "../../redux/action/EntrepriseAction";
+import { useNavigation } from "@react-navigation/native";
 
 const AddSociety = () => {
   const windowWidth = Dimensions.get("window").width;
@@ -28,7 +34,47 @@ const AddSociety = () => {
     city: "",
     zip: "",
     email: "",
+    description: "",
+    email: "",
+    siteWeb: "",
   });
+
+  const date = new Date();
+
+  const navigation = useNavigation();
+
+  const authenticateUser = useSelector((state) => state.authenticateReducer);
+  useEffect(() => {}, []);
+
+  const dispatch = useDispatch();
+
+  const submitData = async () => {
+    let data = {
+      nom: inputValues.name,
+      secteur: inputValues.activity,
+      adresse: inputValues.address,
+      ville: inputValues.city,
+      codePostal: inputValues.zip,
+      description: inputValues.description,
+      checked: false,
+      telephone: inputValues.phone,
+      email: inputValues.email,
+      siteWeb: inputValues.siteWeb,
+      createAt: date,
+      updateAt: date,
+      userId: `\/api\/users\/${authenticateUser.userId}`,
+    };
+
+    try {
+      if (authenticateUser.accessToken) {
+        await dispatch(add_entreprise(authenticateUser.accessToken, data));
+        await dispatch(get_entreprise(authenticateUser.accessToken));
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Swiper
@@ -100,6 +146,7 @@ const AddSociety = () => {
               style={styles.input}
               clearButtonMode="always"
               keyboardType="phone-pad"
+              textContentType="telephoneNumber"
               placeholderTextColor={colorPlaceHolder}
               onChangeText={(phone) =>
                 setInputValue({ ...inputValues, phone: phone })
@@ -130,6 +177,7 @@ const AddSociety = () => {
                 style={[styles.input]}
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
+                textContentType="streetAddressLine1"
                 onChangeText={(address) =>
                   setInputValue({ ...inputValues, address: address })
                 }
@@ -139,6 +187,7 @@ const AddSociety = () => {
                 style={styles.input}
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
+                textContentType="addressCity"
                 onChangeText={(city) =>
                   setInputValue({ ...inputValues, city: city })
                 }
@@ -149,6 +198,7 @@ const AddSociety = () => {
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
                 keyboardType="number-pad"
+                textContentType="postalCode"
                 onChangeText={(zip) =>
                   setInputValue({ ...inputValues, zip: zip })
                 }
@@ -159,6 +209,7 @@ const AddSociety = () => {
                 clearButtonMode="always"
                 placeholderTextColor={colorPlaceHolder}
                 keyboardType="email-address"
+                textContentType="emailAddress"
                 onChangeText={(email) =>
                   setInputValue({ ...inputValues, email: email })
                 }
@@ -202,7 +253,7 @@ const AddSociety = () => {
               <Text style={styles.addressResume}>{inputValues.zip}</Text>
             </View>
           </View>
-          <Ripple>
+          <Ripple onPress={() => submitData()}>
             <View style={styles.addButton}>
               <Text style={styles.textButton}>Enregistrer</Text>
             </View>

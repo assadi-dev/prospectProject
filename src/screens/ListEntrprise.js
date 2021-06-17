@@ -18,27 +18,30 @@ import CardListViewEntreprise from "../components/CardListViewEntreprise";
 import HiddenButtons from "../components/HiddenButtons";
 import HiddenLeftButton from "../components/HiddenLeftButtons";
 import { Feather } from "@expo/vector-icons";
-
-const listDataS = [
-  { key: "1", title: "Axiom", checked: false },
-  { key: "2", title: "Axa", checked: true },
-  { key: "3", title: "Groupama", checked: true },
-  { key: "4", title: "Credit Agricole", checked: false },
-  { key: "5", title: "Credit Agricole", checked: false },
-  { key: "6", title: "Credit Agricole", checked: false },
-  { key: "7", title: "Credit Agricole", checked: false },
-  { key: "8", title: "Credit Agricole", checked: false },
-];
+import { useSelector, useDispatch } from "react-redux";
+import { get_entreprise } from "../redux/action/EntrepriseAction";
 
 const ListEntrprise = () => {
   const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
-  /*const [listData, setListData] = useState(
-    Array(20)
-      .fill("")
-      .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))
-    );*/
 
-  const [listData, setListData] = useState(listDataS);
+  const listEntreprise = useSelector((state) => state.entrepriseReducer);
+
+  const [listData, setListData] = useState({
+    key: null,
+    nom: null,
+    checked: null,
+  });
+
+  useEffect(() => {
+    (async () => {
+      const listEntrepriseData = await listEntreprise.data.map((data) => ({
+        key: data.id.toString(),
+        nom: data.nom,
+        checked: data.checked,
+      }));
+      setListData(listEntrepriseData);
+    })();
+  }, []);
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -61,7 +64,13 @@ const ListEntrprise = () => {
   };
 
   const renderItem = (data, rowMap) => {
-    return <CardListViewEntreprise />;
+    return (
+      <CardListViewEntreprise
+        id={data.item.id}
+        nom={data.item.nom}
+        checked={data.item.checked}
+      />
+    );
   };
 
   const renderHiddenItem = (data, rowMap) => {
@@ -83,12 +92,16 @@ const ListEntrprise = () => {
         <View style={styles.topCard}>
           <View style={{ width: "77%" }}>
             <Text style={[styles.colorText, { marginBottom: 10 }]}>
-              <Text style={[styles.colorText, styles.titleText]}>50</Text>{" "}
-              Entreprises enregistrées
+              <Text style={[styles.colorText, styles.titleText]}>
+                {listData.length ? listData.length : " "}
+              </Text>{" "}
+              {listData.length
+                ? `Entreprises enregistrées`
+                : `Aucun entreprises enregistrées`}
             </Text>
 
             <View style={styles.inputContainer}>
-              <Feather  name="search" size={14} color="rgba(255,255,255,0.5)" />
+              <Feather name="search" size={14} color="rgba(255,255,255,0.5)" />
               <TextInput
                 style={styles.input}
                 placeholder="Rechercher une entreprise"
@@ -103,21 +116,23 @@ const ListEntrprise = () => {
           />
         </View>
         <View style={styles.sectionList}>
-          <SwipeListView
-            data={listData}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            keyExtractor={listData.key}
-            showsVerticalScrollIndicator={false}
-            rightOpenValue={-136}
-            disableRightSwipe={true}
-            previewRowKey={"0"}
-            previewOpenValue={-40}
-            previewOpenDelay={3000}
-            onRowOpen={onRowDidOpen}
-            rightActivationValue={-200}
-            rightActionValue={0}
-          />
+          {listData.length && (
+            <SwipeListView
+              data={listData}
+              renderItem={renderItem}
+              renderHiddenItem={renderHiddenItem}
+              keyExtractor={listData.key}
+              showsVerticalScrollIndicator={false}
+              rightOpenValue={-136}
+              disableRightSwipe={true}
+              previewRowKey={"0"}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              onRowOpen={onRowDidOpen}
+              rightActivationValue={-200}
+              rightActionValue={0}
+            />
+          )}
         </View>
       </SafeAreaView>
     </View>
@@ -175,7 +190,7 @@ const styles = StyleSheet.create({
     width: "90%",
     borderRadius: 10,
     flexDirection: "row",
-    alignItems:"center"
+    alignItems: "center",
   },
   input: {
     color: "#fff",
