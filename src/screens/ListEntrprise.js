@@ -19,13 +19,21 @@ import HiddenButtons from "../components/HiddenButtons";
 import HiddenLeftButton from "../components/HiddenLeftButtons";
 import { Feather } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { get_entreprise } from "../redux/action/EntrepriseAction";
+import {
+  delete_entreprise,
+  get_entreprise,
+} from "../redux/action/EntrepriseAction";
+import { useNavigation } from "@react-navigation/native";
 
 const ListEntrprise = () => {
   const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
 
   const listEntreprise = useSelector((state) => state.entrepriseReducer);
-
+  const userToken = useSelector(
+    (state) => state.authenticateReducer.accessToken
+  );
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [listData, setListData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -48,7 +56,7 @@ const ListEntrprise = () => {
         setListData(array);
       }
     })();
-  }, [listEntreprise.isLoading, searchTerm]);
+  }, [dispatch, listEntreprise.isLoading, searchTerm]);
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -56,13 +64,20 @@ const ListEntrprise = () => {
     }
   };
 
-  const deleteRow = (rowMap, rowKey) => {
+  const detail = async (rowMap, rowKey) => {
+    await closeRow(rowMap, rowKey);
+    navigation.navigate("informations", { id: rowKey });
+  };
+
+  const deleteRow = async (rowMap, rowKey) => {
     closeRow(rowMap, rowKey);
+
     const newData = [...listData];
     const prevIndex = listData.findIndex((item) => item.key === rowKey);
     newData.splice(prevIndex, 1);
-    setListData(newData);
-    //sconsole.log("delete");
+    await dispatch(delete_entreprise(userToken, rowKey)).then(
+      setListData(newData)
+    );
   };
   const [isRowOpen, setIsRowOpen] = useState(false);
   const onRowDidOpen = () => {
@@ -73,7 +88,7 @@ const ListEntrprise = () => {
   const renderItem = (data, rowMap) => {
     return (
       <CardListViewEntreprise
-        id={data.item.id}
+        id={data.item.key}
         nom={data.item.nom}
         checked={data.item.checked}
       />
@@ -83,11 +98,14 @@ const ListEntrprise = () => {
   const renderHiddenItem = (data, rowMap) => {
     return (
       <HiddenLeftButton
-        data={data}
+        id={data.item.key}
         rowMap={rowMap}
-        onClose={() => closeRow(rowMap, data.item.key)}
+        onClose={() => detail(rowMap, data.item.key)}
         onDelete={() => deleteRow(rowMap, data.item.key)}
         isRowOpen={isRowOpen}
+        navigation={navigation}
+        dispatch={dispatch}
+        token={userToken}
       />
     );
   };
@@ -100,11 +118,9 @@ const ListEntrprise = () => {
           <View style={{ width: "77%" }}>
             <Text style={[styles.colorText, { marginBottom: 10 }]}>
               <Text style={[styles.colorText, styles.titleText]}>
-                {listEntreprise.dataCollection.length
-                  ? listEntreprise.dataCollection.length
-                  : " "}
+                {listData.length != 0 ? listData.length : " "}
               </Text>{" "}
-              {listEntreprise.dataCollection.length
+              {listData.length != 0
                 ? `Entreprises enregistrées`
                 : `Aucun entreprises enregistrées`}
             </Text>

@@ -3,11 +3,11 @@ import thunk from "redux-thunk";
 import authenticateReducer from "./reducer/AuthReducer";
 import entrepriseReducer from "./reducer/EntreprisesReducer";
 
-const combineRootReducer = combineReducers({
+const rootReducer = combineReducers({
   authenticateReducer,
   entrepriseReducer,
 });
 
-const store = createStore(combineRootReducer, applyMiddleware(thunk));
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default store;

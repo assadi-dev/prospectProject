@@ -42,7 +42,7 @@ const LoginPage = () => {
         setFieldError({
           ...fieldError,
           isError: true,
-          message: "Votre Email ou Mot de passe sont inccorect !",
+          message: "Votre Email ou Mot de passe sont incorrect !",
         });
       });
   };

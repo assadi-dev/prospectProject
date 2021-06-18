@@ -12,7 +12,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import CardListViewEntreprise from "../components/CardListViewEntreprise";
 import CardListViewRDV from "../components/CardListViewRDV";
-import { get_entreprise_unCheck } from "../redux/action/EntrepriseAction";
+import {
+  get_entreprise,
+  get_entreprise_check,
+  get_entreprise_unCheck,
+} from "../redux/action/EntrepriseAction";
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -20,14 +24,16 @@ const HomeScreen = () => {
   const listEntreprise = useSelector((state) => state.entrepriseReducer);
   const [token, setToken] = useState("");
   const [uncheckedEntreprise, setUncheckedEntreprise] = useState([]);
+  const [checkedEntreprise, setCheckedEntreprise] = useState([]);
 
   useEffect(() => {
-    if (userConnect) {
-      setToken(userConnect.accessToken);
-
-      setUncheckedEntreprise(listEntreprise.unCheckCollection);
-    }
-    dispatch(get_entreprise_unCheck(token));
+    (async () => {
+      try {
+        dispatch(get_entreprise(token));
+        dispatch(get_entreprise_unCheck(token));
+        dispatch(get_entreprise_check(token));
+      } catch (error) {}
+    })();
   }, [dispatch, listEntreprise.isLoading]);
 
   // console.log(listEntreprise);
@@ -59,7 +65,9 @@ const HomeScreen = () => {
               </Text>
               <Text style={[styles.colorText, styles.infoText]}>
                 {` Vous avez prospecté ${
-                  uncheckedEntreprise ? uncheckedEntreprise.length : 0
+                  listEntreprise.checkCollection
+                    ? listEntreprise.checkCollection.length
+                    : 0
                 } entreprises`}
               </Text>
             </View>
@@ -79,7 +87,12 @@ const HomeScreen = () => {
                 {listEntreprise.unCheckCollection &&
                   listEntreprise.unCheckCollection
                     .map((item) => (
-                      <CardListViewEntreprise key={item.id} nom={item.nom} />
+                      <CardListViewEntreprise
+                        key={item.id}
+                        id={item.id}
+                        nom={item.nom}
+                        checked={item.checked}
+                      />
                     ))
                     .slice(0, 5)}
               </View>

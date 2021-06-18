@@ -23,7 +23,6 @@ import {
 
 export default function App() {
   const Stack = createStackNavigator();
-  const store = rootReducer;
 
   const dispatch = useDispatch();
   const authenticateUser = useSelector((state) => state.authenticateReducer);
@@ -37,7 +36,6 @@ export default function App() {
       if (cacheAuth) {
         try {
           dispatch(login(cacheAuth));
-          dispatch(get_entreprise(cacheAuth.accessToken));
         } catch (error) {
           console.log(error.response.data);
         }

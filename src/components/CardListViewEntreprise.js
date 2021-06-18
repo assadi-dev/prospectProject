@@ -9,6 +9,14 @@ import {
   TouchableHighlight,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { connect } from "react-redux";
+import {
+  checkUpdate,
+  get_entreprise,
+  get_entreprise_check,
+  get_entreprise_unCheck,
+  unCheckUpdate,
+} from "../redux/action/EntrepriseAction";
 
 class CardListViewEntreprise extends Component {
   constructor(props) {
@@ -16,6 +24,9 @@ class CardListViewEntreprise extends Component {
     this.state = {
       isChecked: this.props.checked,
       fadeAnimation: new Animated.Value(0),
+      token: this.props.token,
+      id: this.props.id,
+      userId: this.props.userId,
     };
   }
 
@@ -46,7 +57,7 @@ class CardListViewEntreprise extends Component {
     this.fadeOut();
   }
 
-  handleCheck = () => {
+  handleCheck = async () => {
     Animated.sequence([
       Animated.timing(this.buttonSize, {
         toValue: 1.3,
@@ -58,7 +69,22 @@ class CardListViewEntreprise extends Component {
         useNativeDriver: false,
       }),
     ]).start();
-    this.setState({ isChecked: !this.state.isChecked });
+
+    await this.setState({ isChecked: !this.state.isChecked });
+    const date_update = new Date();
+    const data = {
+      checked: this.state.isChecked,
+      updateAt: date_update,
+      userId: `/api/users/${this.state.userId}`,
+    };
+
+    data.checked === true
+      ? await this.props.checkUpdate(this.state.token, this.state.id, data)
+      : await this.props.unCheckUpdate(this.state.token, this.state.id, data);
+
+    //await this.props.get_entreprise(this.state.token);
+    await this.props.get_entreprise_check(this.state.token);
+    //await this.props.get_entreprise_unCheck(this.state.token);
   };
 
   render() {
@@ -66,7 +92,7 @@ class CardListViewEntreprise extends Component {
       transform: [{ scale: this.buttonSize }],
     };
 
-    const { id, nom } = this.props;
+    const { id, nom, token } = this.props;
     const { isChecked } = this.state;
 
     return (
@@ -171,4 +197,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CardListViewEntreprise;
+const mapStateToProps = ({ authenticateReducer }) => {
+  const token = authenticateReducer.accessToken;
+  const userId = authenticateReducer.userId;
+  return { token, userId };
+};
+
+export default connect(mapStateToProps, {
+  checkUpdate,
+  unCheckUpdate,
+  get_entreprise,
+  get_entreprise_check,
+  get_entreprise_unCheck,
+})(CardListViewEntreprise);

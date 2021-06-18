@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import { View, Text, Animated, TouchableOpacity } from "react-native";
 import Ripple from "react-native-material-ripple";
 import { Feather } from "@expo/vector-icons";
+import { connect } from "react-redux";
+import { delete_entreprise } from "../redux/action/EntrepriseAction";
 
 class HiddenLeftButtons extends Component {
   constructor(props) {
     super(props);
     this.state = {
       fadeAnimation: new Animated.Value(0),
+      token: this.props.authenticateReducer,
     };
   }
 
@@ -38,7 +41,7 @@ class HiddenLeftButtons extends Component {
 
   render() {
     const { fadeAnimation, iconSize } = this.state;
-    const { onClose, swipeAnimatedValue, onDelete } = this.props;
+    const { onClose, swipeAnimatedValue, onDelete, id } = this.props;
     return (
       <Animated.View
         style={{
@@ -110,4 +113,8 @@ class HiddenLeftButtons extends Component {
   }
 }
 
-export default HiddenLeftButtons;
+const mapStateProps = ({ authenticateReducer }) => {
+  return { authenticateReducer };
+};
+
+export default connect(mapStateProps)(HiddenLeftButtons);

@@ -67,13 +67,11 @@ const AddSociety = () => {
     };
 
     try {
-      if (authenticateUser.accessToken) {
-        await dispatch(add_entreprise(authenticateUser.accessToken, data));
-        await dispatch(get_entreprise_unCheck(authenticateUser.accessToken));
-        await dispatch(get_entreprise(authenticateUser.accessToken));
-        // await setInputValue(defautValue);
-        navigation.navigate("Home");
-      }
+      await dispatch(add_entreprise(authenticateUser.accessToken, data));
+      await dispatch(get_entreprise_unCheck(authenticateUser.accessToken));
+      await dispatch(get_entreprise(authenticateUser.accessToken));
+      // await setInputValue(defautValue);
+      navigation.navigate("Home");
     } catch (error) {
       console.log(error);
     }

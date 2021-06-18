@@ -5,10 +5,16 @@ import App from "./App";
 
 import store from "./src/redux/store";
 
-export default function AppProvider() {
+const AppProvider = () => {
   return (
     <ReduxProvider store={store}>
       <App />
     </ReduxProvider>
   );
-}
+};
+
+const mapStateToProps = ({ entrepriseReducer }) => {
+  return { store: entrepriseReducer };
+};
+
+export default AppProvider;
