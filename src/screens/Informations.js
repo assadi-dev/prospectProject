@@ -3,13 +3,17 @@ import { StyleSheet, Text, View, Button } from "react-native";
 import { logout } from "../redux/action/AuthAction";
 import { useDispatch, useSelector } from "react-redux";
 import { signOutAsync } from "../config/AuthServices";
+import { useNavigation } from "@react-navigation/native";
 
 const Informations = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.authenticateReducer);
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     //console.log(data.accessToken);
+    //navigation.setOptions({ headerTitle: "Nom de l'entreprise" });
   }, [dispatch]);
 
   return (

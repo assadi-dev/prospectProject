@@ -1,12 +1,11 @@
 import {
-  ADD_ENTREPRISE,
-  GET_ENTREPRISE_USER,
-  GET_ENTREPRISE_UNCHECKED,
-  DELETE_ENTREPRISE,
-  GET_ENTREPRISE_CHECKED,
-  UPDATE_CHECK,
-  UPDATE_UNCHECK,
-} from "../action/EntrepriseAction";
+  GET_RENDEZ_VOUS_CHECKED,
+  GET_RENDEZ_VOUS_UNCHECKED,
+  GET_RENDEZ_VOUS_USER,
+  UPDATE_CHECK_RDV,
+  UPDATE_UNCHECK_RDV,
+  DELETE_RENDEZ_VOUS,
+} from "../action/RendezVousAction";
 
 const initialState = {
   isLoading: true,
@@ -15,57 +14,30 @@ const initialState = {
   checkCollection: [],
 };
 
-export default entrepriseReducer = (state = initialState, action) => {
+export default rendezVousReducer = (state = initialState, action) => {
   switch (action.type) {
-    case GET_ENTREPRISE_USER:
+    case GET_RENDEZ_VOUS_USER:
       return {
         ...state,
         isLoading: false,
         dataCollection: action.payload,
       };
       break;
-    case GET_ENTREPRISE_UNCHECKED:
+    case GET_RENDEZ_VOUS_UNCHECKED:
       return {
         ...state,
         isLoading: false,
         unCheckCollection: action.payload,
       };
       break;
-    case GET_ENTREPRISE_CHECKED:
+    case GET_RENDEZ_VOUS_CHECKED:
       return {
         ...state,
         isLoading: false,
         checkCollection: action.payload,
       };
       break;
-    case ADD_ENTREPRISE:
-      return {
-        ...state,
-        isLoading: false,
-        dataCollection: [...state.dataCollection, action.payload],
-        unCheckCollection: [action.payload, ...state.unCheckCollection],
-      };
-      break;
-    case DELETE_ENTREPRISE:
-      return {
-        ...state,
-        isLoading: false,
-        dataCollection: [
-          ...state.dataCollection.filter((item) => item.id != action.payload),
-        ],
-        unCheckCollection: [
-          ...state.unCheckCollection.filter(
-            (item) => item.id != action.payload
-          ),
-        ],
-        checkCollection: [
-          ...state.checkCollection.filter(
-            (item) => item.id != action.payload.id
-          ),
-        ],
-      };
-      break;
-    case UPDATE_CHECK:
+    case UPDATE_CHECK_RDV:
       return {
         ...state,
         isLoading: false,
@@ -85,8 +57,7 @@ export default entrepriseReducer = (state = initialState, action) => {
         checkCollection: [action.payload, ...state.checkCollection],
       };
       break;
-
-    case UPDATE_UNCHECK:
+    case UPDATE_UNCHECK_RDV:
       return {
         ...state,
         isLoading: false,
@@ -106,8 +77,16 @@ export default entrepriseReducer = (state = initialState, action) => {
         ),
       };
       break;
+    case DELETE_RENDEZ_VOUS:
+      return {
+        ...state,
+        dataCollection: state.dataCollection.filter(
+          (item) => item.id != action.payload
+        ),
+      };
 
     default:
       return state;
+      break;
   }
 };

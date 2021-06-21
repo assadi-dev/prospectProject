@@ -1,79 +1,114 @@
-import React , { useState, useEffect } from "react";
-import { StyleSheet, Text, View, SafeAreaView,
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
   Image,
   StatusBar,
   Animated,
   TouchableOpacity,
-  TextInput
+  TextInput,
 } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import CardListViewRDV from "../../components/CardListViewRDV";
 import HiddenLeftButton from "../../components/HiddenLeftButtons";
 import { Feather } from "@expo/vector-icons";
-
-
-  const listDataS = [
-    { key: "1", title: "Axiom", checked: false },
-    { key: "2", title: "Axa", checked: true },
-    { key: "3", title: "Groupama", checked: true },
-    { key: "4", title: "Credit Agricole", checked: false },
-    { key: "5", title: "Credit Agricole", checked: false },
-    { key: "6", title: "Credit Agricole", checked: false },
-    { key: "7", title: "Credit Agricole", checked: false },
-    { key: "8", title: "Credit Agricole", checked: false },
-  ];
-
-
-const closeRow = (rowMap, rowKey) => {
-  if (rowMap[rowKey]) {
-    rowMap[rowKey].closeRow();
-  }
-};
-
-const deleteRow = (rowMap, rowKey) => {
-  closeRow(rowMap, rowKey);
-  const newData = [...listData];
-  const prevIndex = listData.findIndex((item) => item.key === rowKey);
-  newData.splice(prevIndex, 1);
-  setListData(newData);
-  
-};
-
-
-const renderItem = (data, rowMap) => {
-  return <CardListViewRDV />;
-};
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  delete_rendez_vous,
+  get_rendez_vous,
+} from "../../redux/action/RendezVousAction";
+import { useNavigation } from "@react-navigation/native";
 
 const ListRendezVous = () => {
   const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
-  const [listData, setListData] = useState(listDataS);
+  const [listData, setListData] = useState([]);
+  const userToken = useSelector(
+    (state) => state.authenticateReducer.accessToken
+  );
+  const listRendezVous = useSelector((state) => state.rendezVousReducer);
   const [isRowOpen, setIsRowOpen] = useState(false);
+  const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsloadig] = useState(true);
+  const navigation = useNavigation();
+  const closeRow = (rowMap, rowKey) => {
+    if (rowMap[rowKey]) {
+      rowMap[rowKey].closeRow();
+    }
+  };
 
-  
+  const detail = async (rowMap, rowKey) => {
+    await closeRow(rowMap, rowKey);
+    navigation.navigate("informations", { id: rowKey });
+  };
 
+  const deleteRow = async (rowMap, rowKey) => {
+    closeRow(rowMap, rowKey);
+    const newData = [...listData];
+    const prevIndex = listData.findIndex((item) => item.key === rowKey);
+    newData.splice(prevIndex, 1);
+    await dispatch(delete_rendez_vous(userToken, rowKey)).then(
+      setListData(newData)
+    );
+  };
+
+  const renderItem = (data, rowMap) => {
+    return (
+      <CardListViewRDV
+        id={data.item.key}
+        nom={data.item.nom}
+        date={data.item.date}
+        checked={data.item.checked}
+      />
+    );
+  };
 
   const renderHiddenItem = (data, rowMap) => {
     return (
       <HiddenLeftButton
         data={data}
         rowMap={rowMap}
-        onClose={() => closeRow(rowMap, data.item.key)}
+        onClose={() => detail(rowMap, data.item.key)}
         onDelete={() => deleteRow(rowMap, data.item.key)}
-       
       />
     );
   };
-  
-  
+
+  useEffect(() => {
+    (async () => {
+      if (userToken) {
+        await dispatch(get_rendez_vous(userToken));
+      }
+      if (listRendezVous.dataCollection) {
+        const listRendevousData = listRendezVous.dataCollection.map((item) => ({
+          key: item.id.toString(),
+          nom: item.nom,
+          date: item.date,
+          checked: item.checked,
+        }));
+        const array = listRendevousData.filter((item) => {
+          return item.nom
+            .toLocaleLowerCase()
+            .includes(searchTerm.toLowerCase());
+        });
+        setListData(array);
+        setIsloadig(listRendezVous.isLoading);
+      }
+    })();
+  }, [dispatch, searchTerm, isLoading]);
+
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <View style={styles.topCard}>
           <View style={{ width: "77%" }}>
             <Text style={[styles.colorText, { marginBottom: 10 }]}>
-              <Text style={[styles.colorText, styles.titleText]}>50</Text>{" "}
+              <Text style={[styles.colorText, styles.titleText]}>
+                {listRendezVous.dataCollection.length}
+              </Text>{" "}
               Rendez-vous enregistrées
             </Text>
 
@@ -84,6 +119,7 @@ const ListRendezVous = () => {
                 placeholder="Rechercher une entreprise"
                 placeholderTextColor="rgba(255,255,255,0.5)"
                 selectionColor="rgba(255,255,255,0.5)"
+                onChangeText={(term) => setSearchTerm(term)}
               />
             </View>
           </View>
@@ -93,24 +129,30 @@ const ListRendezVous = () => {
           />
         </View>
         <View style={styles.sectionList}>
-          <SwipeListView
-            data={listData}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            keyExtractor={listData.key}
-            showsVerticalScrollIndicator={false}
-            rightOpenValue={-136}
-            disableRightSwipe={true}
-            previewRowKey={"0"}
-            previewOpenValue={-40}
-            previewOpenDelay={3000}
-            rightActivationValue={-200}
-            rightActionValue={0}
-          />
+          {searchTerm ? (
+            <View>
+              <Text>{`${listData.length} RDV(s) trouvée(s)`}</Text>
+            </View>
+          ) : null}
+          {listData && (
+            <SwipeListView
+              data={listData}
+              renderItem={renderItem}
+              renderHiddenItem={renderHiddenItem}
+              keyExtractor={listData.key}
+              showsVerticalScrollIndicator={false}
+              rightOpenValue={-136}
+              disableRightSwipe={true}
+              previewRowKey={"0"}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              rightActivationValue={-200}
+              rightActionValue={0}
+            />
+          )}
         </View>
       </SafeAreaView>
     </View>
-  
   );
 };
 
@@ -165,7 +207,7 @@ const styles = StyleSheet.create({
     width: "90%",
     borderRadius: 10,
     flexDirection: "row",
-    alignItems:"center"
+    alignItems: "center",
   },
   input: {
     color: "#fff",

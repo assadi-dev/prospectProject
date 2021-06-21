@@ -25,6 +25,14 @@ import Ripple from "react-native-material-ripple";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { getDateFull, getFullHour, getfullNumber } from "../../config/Utils";
 import * as Calendar from "expo-calendar";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  add_rendez_vous,
+  get_rendez_vous,
+  get_rendez_vous_checked,
+  get_rendez_vous_uncheck,
+} from "../../redux/action/RendezVousAction";
+import { useNavigation } from "@react-navigation/native";
 
 const AddRDV = () => {
   const windowWidth = Dimensions.get("window").width;
@@ -35,17 +43,24 @@ const AddRDV = () => {
     name: "",
     activity: "",
     date: `${getfullNumber(new Date().getDate())} / ${getfullNumber(
-      new Date().getMonth()
+      new Date().getMonth() + 1
     )} / ${new Date().getFullYear()} `,
-    time: `${getfullNumber(
-      new Date().getHours()
-    )} h ${new Date().getMinutes()}`,
+    time: `${getfullNumber(new Date().getHours())} h ${getfullNumber(
+      new Date().getMinutes()
+    )}`,
     description: "",
   });
 
   const [timeStampDate, setTimeStampDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+  const date = new Date();
+  const [dateToImport, setDateToImport] = useState(timeStampDate);
+
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const authenticateUser = useSelector((state) => state.authenticateReducer);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -55,12 +70,13 @@ const AddRDV = () => {
     setInputValue({
       ...inputValues,
       date: `${getfullNumber(dateToString.getDate())} / ${getfullNumber(
-        dateToString.getMonth()
+        dateToString.getMonth() + 1
       )} / ${getfullNumber(dateToString.getFullYear())}`,
       time: `${getfullNumber(dateToString.getHours())} h ${getfullNumber(
         dateToString.getMinutes()
       )}`,
     });
+    setDateToImport(dateToString);
   };
 
   const showMode = (currentMode) => {
@@ -74,6 +90,28 @@ const AddRDV = () => {
 
   const showTimepicker = () => {
     showMode("time");
+  };
+
+  const submitData = async () => {
+    let clean;
+    let data = {
+      nom: inputValues.name,
+      description: inputValues.description,
+      date: dateToImport,
+      heure: dateToImport,
+      createdAt: date,
+      updatedAt: date,
+      checked: false,
+      userId: `/api/users/${authenticateUser.userId}`,
+    };
+
+    try {
+      await dispatch(add_rendez_vous(authenticateUser.accessToken, data));
+      await dispatch(get_rendez_vous(authenticateUser.accessToken));
+      await dispatch(get_rendez_vous_checked(authenticateUser.accessToken));
+      await dispatch(get_rendez_vous_uncheck(authenticateUser.accessToken));
+      navigation.navigate("Home");
+    } catch (error) {}
   };
 
   return (
@@ -237,7 +275,7 @@ const AddRDV = () => {
               </TouchableOpacity>
             </View>
           </View>
-          <Ripple>
+          <Ripple onPress={submitData}>
             <View style={styles.addButton}>
               <Text style={styles.textButton}>Enregistrer</Text>
             </View>

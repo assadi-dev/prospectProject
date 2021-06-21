@@ -83,7 +83,7 @@ class CardListViewEntreprise extends Component {
       : await this.props.unCheckUpdate(this.state.token, this.state.id, data);
 
     //await this.props.get_entreprise(this.state.token);
-    await this.props.get_entreprise_check(this.state.token);
+    //await this.props.get_entreprise_check(this.state.token);
     //await this.props.get_entreprise_unCheck(this.state.token);
   };
 

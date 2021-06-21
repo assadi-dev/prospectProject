@@ -7,17 +7,42 @@ import {
   Animated,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { connect } from "react-redux";
+import {
+  check_update_rendez_vous,
+  unCheck_update_rendez_vous,
+  get_rendez_vous,
+  get_rendez_vous_uncheck,
+  get_rendez_vous_checked,
+} from "../redux/action/RendezVousAction";
 
 class CardListViewRDV extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isChecked: false,
+      isChecked: this.props.checked,
       fadeAnimation: new Animated.Value(0),
     };
   }
 
   buttonSize = new Animated.Value(1);
+
+  date_to_string_Min = (timestamp) => {
+    const date = new Date(timestamp);
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+
+    if (day < 10) {
+      day = "0" + day;
+    }
+    if (month < 10) {
+      month = "0" + month;
+    }
+
+    let fullDate = `${day}/${month}`;
+
+    return fullDate;
+  };
 
   fadeIn = () => {
     Animated.timing(this.state.fadeAnimation, {
@@ -37,6 +62,8 @@ class CardListViewRDV extends Component {
 
   componentDidMount() {
     this.fadeIn();
+
+    this.setState({ ...this.state, isChecked: this.props.checked });
   }
   /* componentDidUpdate() {
     this.state.isChecked && this.fadeOut();
@@ -45,7 +72,7 @@ class CardListViewRDV extends Component {
     this.fadeOut();
   }
 
-  handleCheck = () => {
+  handleCheck = async () => {
     Animated.sequence([
       Animated.timing(this.buttonSize, {
         toValue: 1.3,
@@ -57,7 +84,27 @@ class CardListViewRDV extends Component {
         useNativeDriver: false,
       }),
     ]).start();
-    this.setState({ isChecked: !this.state.isChecked });
+    await this.setState({ isChecked: !this.state.isChecked });
+    const updateDate = new Date();
+    const data = {
+      checked: this.state.isChecked,
+      updatedAt: updateDate,
+      userId: `\/api\/users\/${this.props.userId}`,
+    };
+
+    data.checked === true
+      ? await this.props.check_update_rendez_vous(
+          this.props.token,
+          this.props.id,
+          data
+        )
+      : await this.props.unCheck_update_rendez_vous(
+          this.props.token,
+          this.props.id,
+          data
+        );
+    //await get_rendez_vous_uncheck(this.props.token);
+    //await get_rendez_vous_checked(this.props.token);
   };
 
   render() {
@@ -65,6 +112,7 @@ class CardListViewRDV extends Component {
       transform: [{ scale: this.buttonSize }],
     };
 
+    const { nom, date } = this.props;
     return (
       <Animated.View
         style={[styles.cardContainer, { opacity: this.state.fadeAnimation }]}
@@ -94,8 +142,11 @@ class CardListViewRDV extends Component {
                 }
               >
                 {" "}
-                <Text style={styles.textDate}> 29/06 </Text> Entretien avec
-                Axiom
+                <Text style={styles.textDate}>
+                  {" "}
+                  {this.date_to_string_Min(date)}{" "}
+                </Text>{" "}
+                {nom}
               </Text>
             </View>
           </View>
@@ -165,4 +216,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CardListViewRDV;
+const mapStateToProps = ({ authenticateReducer }) => {
+  const token = authenticateReducer.accessToken;
+  const userId = authenticateReducer.userId;
+  return { token, userId };
+};
+
+export default connect(mapStateToProps, {
+  check_update_rendez_vous,
+  unCheck_update_rendez_vous,
+  get_rendez_vous,
+})(CardListViewRDV);

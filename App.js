@@ -16,10 +16,8 @@ import { getCachedAuthAsync } from "./src/config/AuthServices";
 import { useDispatch, useSelector } from "react-redux";
 import rootReducer from "./src/redux/store";
 import { login } from "./src/redux/action/AuthAction";
-import {
-  get_entreprise,
-  get_entreprise_unCheck,
-} from "./src/redux/action/EntrepriseAction";
+import { get_entreprise } from "./src/redux/action/EntrepriseAction";
+import { get_rendez_vous } from "./src/redux/action/RendezVousAction";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -36,6 +34,8 @@ export default function App() {
       if (cacheAuth) {
         try {
           dispatch(login(cacheAuth));
+          await dispatch(get_rendez_vous(cacheAuth.accessToken));
+          await dispatch(get_entreprise(cacheAuth.accessToken));
         } catch (error) {
           console.log(error.response.data);
         }

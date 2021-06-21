@@ -13,21 +13,23 @@ export const UPDATE_CHECK = "UPDATE_CHECK";
 export const UPDATE_UNCHECK = "UPDATE_UNCHECK";
 
 export const get_entreprise = (token) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     try {
-      api({
-        url: "/entreprises/?order[updateAt]=desc",
-        headers: {
-          Authorization: `${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      })
+      await api
+        .get("/entreprises/?order[updateAt]=desc", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        })
         .then((res) =>
           dispatch({ type: GET_ENTREPRISE_USER, payload: res.data })
         )
         .catch((error) => console.log(error.response.data));
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 
@@ -37,7 +39,7 @@ export const get_entreprise_unCheck = (token) => {
       await api
         .get("/entreprises?checked=false&order[updateAt]=desc", {
           headers: {
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
             Accept: "application/json",
           },
@@ -56,7 +58,7 @@ export const get_entreprise_check = (token) => {
       await api
         .get("/entreprises?checked=true&order[updateAt]=desc", {
           headers: {
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
             Accept: "application/json",
           },
@@ -81,9 +83,6 @@ export const add_entreprise = (token, data) => {
             Accept: "application/json",
           },
         })
-        .then((res) => {
-          dispatch({ type: GET_ENTREPRISE_USER, payload: token });
-        })
         .catch((error) => {
           console.log(error.response.data);
           console.log(error.response.status);
@@ -104,9 +103,7 @@ export const delete_entreprise = (token, id) => {
             Accept: "application/json",
           },
         })
-        .then((res) => {
-          dispatch({ type: DELETE_ENTREPRISE, payload: id });
-        })
+        .then(dispatch({ type: DELETE_ENTREPRISE, payload: id }))
         .catch((error) => console.log(error.response.data));
     } catch (error) {
       console.log(error);

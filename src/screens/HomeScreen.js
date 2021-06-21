@@ -17,26 +17,35 @@ import {
   get_entreprise_check,
   get_entreprise_unCheck,
 } from "../redux/action/EntrepriseAction";
+import {
+  get_rendez_vous,
+  get_rendez_vous_uncheck,
+  get_rendez_vous_checked,
+} from "../redux/action/RendezVousAction";
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const userConnect = useSelector((state) => state.authenticateReducer);
   const listEntreprise = useSelector((state) => state.entrepriseReducer);
+  const listRendezVous = useSelector((state) => state.rendezVousReducer);
+  const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState("");
-  const [uncheckedEntreprise, setUncheckedEntreprise] = useState([]);
-  const [checkedEntreprise, setCheckedEntreprise] = useState([]);
 
   useEffect(() => {
     (async () => {
+      if (userConnect.accessToken) {
+        setToken(userConnect.accessToken);
+      }
       try {
-        dispatch(get_entreprise(token));
-        dispatch(get_entreprise_unCheck(token));
-        dispatch(get_entreprise_check(token));
+        await dispatch(get_entreprise_unCheck(token));
+        await dispatch(get_entreprise_check(token));
+        await dispatch(get_rendez_vous_uncheck(token));
+        await dispatch(get_rendez_vous_checked(token));
+        await setIsLoading(listEntreprise.isLoading);
       } catch (error) {}
     })();
-  }, [dispatch, listEntreprise.isLoading]);
+  }, [dispatch, isLoading]);
 
-  // console.log(listEntreprise);
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -61,7 +70,9 @@ const HomeScreen = () => {
               <Text
                 style={[styles.colorText, styles.infoText, { marginBottom: 5 }]}
               >
-                {`Vous avez passé 5 Entretiens`}
+                {`Vous avez passé ${
+                  listRendezVous ? listRendezVous.checkCollection.length : 0
+                } Entretiens`}
               </Text>
               <Text style={[styles.colorText, styles.infoText]}>
                 {` Vous avez prospecté ${
@@ -100,8 +111,18 @@ const HomeScreen = () => {
                 Vos Prochaines Entretiens
               </Text>
               <View style={{ padding: 5, marginBottom: 50 }}>
-                <CardListViewRDV />
-                <CardListViewRDV />
+                {listRendezVous.unCheckCollection &&
+                  listRendezVous.unCheckCollection
+                    .map((item) => (
+                      <CardListViewRDV
+                        key={item.id}
+                        id={item.id}
+                        nom={item.nom}
+                        date={item.date}
+                        checked={item.checked}
+                      />
+                    ))
+                    .slice(0, 5)}
               </View>
             </ScrollView>
           </View>

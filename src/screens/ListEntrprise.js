@@ -27,7 +27,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const ListEntrprise = () => {
   const [fadeAnimation, setFadeAnimation] = useState(new Animated.Value(0));
-
+  const [isLoading, setIsloadig] = useState(true);
   const listEntreprise = useSelector((state) => state.entrepriseReducer);
   const userToken = useSelector(
     (state) => state.authenticateReducer.accessToken
@@ -39,8 +39,11 @@ const ListEntrprise = () => {
 
   useEffect(() => {
     (async () => {
+      if (userToken) {
+        await dispatch(get_entreprise(userToken));
+      }
       if (listEntreprise) {
-        const listEntrepriseData = await listEntreprise.dataCollection.map(
+        const listEntrepriseData = listEntreprise.dataCollection.map(
           (data) => ({
             key: data.id.toString(),
             nom: data.nom,
@@ -48,15 +51,14 @@ const ListEntrprise = () => {
           })
         );
         const array = listEntrepriseData.filter((item) => {
-          return item.nom
-            .toLowerCase()
-            .includes(searchTerm.toLocaleLowerCase());
+          return item.nom.toLowerCase().includes(searchTerm.toLowerCase());
         });
 
         setListData(array);
+        setIsloadig(listEntreprise.isLoading);
       }
     })();
-  }, [dispatch, listEntreprise.isLoading, searchTerm]);
+  }, [dispatch, isLoading, searchTerm]);
 
   const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
@@ -112,15 +114,17 @@ const ListEntrprise = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <View style={styles.topCard}>
           <View style={{ width: "77%" }}>
             <Text style={[styles.colorText, { marginBottom: 10 }]}>
               <Text style={[styles.colorText, styles.titleText]}>
-                {listData.length != 0 ? listData.length : " "}
+                {listEntreprise.dataCollection.length != 0
+                  ? listEntreprise.dataCollection.length
+                  : " "}
               </Text>{" "}
-              {listData.length != 0
+              {listEntreprise.dataCollection.length != 0
                 ? `Entreprises enregistrées`
                 : `Aucun entreprises enregistrées`}
             </Text>

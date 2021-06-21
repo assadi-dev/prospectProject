@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   add_entreprise,
   get_entreprise,
+  get_entreprise_check,
   get_entreprise_unCheck,
 } from "../../redux/action/EntrepriseAction";
 import { useNavigation } from "@react-navigation/native";
@@ -69,6 +70,7 @@ const AddSociety = () => {
     try {
       await dispatch(add_entreprise(authenticateUser.accessToken, data));
       await dispatch(get_entreprise_unCheck(authenticateUser.accessToken));
+      await dispatch(get_entreprise_check(authenticateUser.accessToken));
       await dispatch(get_entreprise(authenticateUser.accessToken));
       // await setInputValue(defautValue);
       navigation.navigate("Home");
