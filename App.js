@@ -18,6 +18,7 @@ import rootReducer from "./src/redux/store";
 import { login } from "./src/redux/action/AuthAction";
 import { get_entreprise } from "./src/redux/action/EntrepriseAction";
 import { get_rendez_vous } from "./src/redux/action/RendezVousAction";
+import SingleEntreprise from "./src/screens/SingleEntreprise";
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -84,6 +85,14 @@ export default function App() {
               options={{ headerShown: true, headerTitle: "Mes Entreprises" }}
               name="listEntreprises"
               component={ListEntrprise}
+            />
+            <Stack.Screen
+              options={{
+                headerShown: true,
+                headerTitle: "Information entreprise",
+              }}
+              name="singleEntreprise"
+              component={SingleEntreprise}
             />
             <Stack.Screen
               options={{ headerShown: true, headerTitle: "Mes Rendez-vous" }}

@@ -97,7 +97,7 @@ const ListRendezVous = () => {
         setIsloadig(listRendezVous.isLoading);
       }
     })();
-  }, [dispatch, searchTerm, isLoading]);
+  }, [dispatch, searchTerm]);
 
   return (
     <View style={styles.container}>

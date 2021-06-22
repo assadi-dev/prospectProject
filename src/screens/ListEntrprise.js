@@ -68,7 +68,7 @@ const ListEntrprise = () => {
 
   const detail = async (rowMap, rowKey) => {
     await closeRow(rowMap, rowKey);
-    navigation.navigate("informations", { id: rowKey });
+    navigation.navigate("singleEntreprise", { id: rowKey, token: userToken });
   };
 
   const deleteRow = async (rowMap, rowKey) => {

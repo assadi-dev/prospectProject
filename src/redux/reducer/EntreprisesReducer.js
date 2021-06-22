@@ -6,6 +6,7 @@ import {
   GET_ENTREPRISE_CHECKED,
   UPDATE_CHECK,
   UPDATE_UNCHECK,
+  GET_ENTREPRISE_SINGLE,
 } from "../action/EntrepriseAction";
 
 const initialState = {
@@ -13,6 +14,7 @@ const initialState = {
   dataCollection: [],
   unCheckCollection: [],
   checkCollection: [],
+  currentData: [],
 };
 
 export default entrepriseReducer = (state = initialState, action) => {
@@ -22,6 +24,13 @@ export default entrepriseReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         dataCollection: action.payload,
+      };
+      break;
+    case GET_ENTREPRISE_SINGLE:
+      return {
+        ...state,
+        isLoading: false,
+        currentData: action.payload,
       };
       break;
     case GET_ENTREPRISE_UNCHECKED:
