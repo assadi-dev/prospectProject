@@ -89,7 +89,7 @@ export default function App() {
             <Stack.Screen
               options={{
                 headerShown: true,
-                headerTitle: "Information entreprise",
+                headerTitle: "",
               }}
               name="singleEntreprise"
               component={SingleEntreprise}

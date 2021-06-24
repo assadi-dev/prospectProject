@@ -10,7 +10,9 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { get_entreprise_single } from "../redux/action/EntrepriseAction";
+import SingleEntrepriseSection from "./SingleEntrepriseSection";
 import { AntDesign } from "@expo/vector-icons";
+import SkeletonContent from "react-native-skeleton-content";
 const SingleEntreprise = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -63,7 +65,6 @@ const SingleEntreprise = () => {
           userId: `\/api\/users\/${state.userId}`,
         });
         navigation.setOptions({
-          headerTitle: entrepriseData.currentData.nom,
           headerRight: () => (
             <TouchableWithoutFeedback
               onPress={() => {
@@ -82,19 +83,63 @@ const SingleEntreprise = () => {
   }, [dispatch, isLoading, editMode]);
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView>
-        <ScrollView style={styles.wrapper}>
-          {editMode ? (
-            <View>
-              <Text>Editer</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <SafeAreaView>
+          {isLoading ? (
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: "18%",
+                marginBottom: 50,
+              }}
+            >
+              <SkeletonContent
+                containerStyle={{
+                  width: "50%",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingHorizontal: 25,
+                }}
+                layout={[
+                  { borderRadius: 100, width: 80, height: 80, marginBottom: 6 },
+                ]}
+                isLoading={isLoading}
+              ></SkeletonContent>
+              <SkeletonContent
+                containerStyle={{
+                  width: "50%",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingHorizontal: 25,
+                }}
+                layout={[
+                  { width: "100%", height: 20, marginBottom: 8 },
+                  { width: "100%", height: 20, marginBottom: 8 },
+                  { width: "100%", height: 20, marginBottom: 8 },
+                  { width: "100%", height: 20, marginBottom: 8 },
+                ]}
+                isLoading={isLoading}
+              ></SkeletonContent>
             </View>
-          ) : (
-            <View>{!isLoading && <Text> Normal </Text>}</View>
-          )}
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+          ) : null}
+          <SkeletonContent
+            containerStyle={{
+              width: "100%",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingHorizontal: 25,
+            }}
+            isLoading={isLoading}
+            layout={[
+              { key: "someId", width: "100%", height: 150, marginBottom: 6 },
+            ]}
+          >
+            {!editMode ? <SingleEntrepriseSection data={editData} /> : null}
+          </SkeletonContent>
+        </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -103,8 +148,7 @@ export default SingleEntreprise;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignContent: "center",
+    marginTop: "20%",
   },
   hedearBar: {
     right: 20,
@@ -113,6 +157,6 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   wrapper: {
-    paddingVertical: 15,
+    paddingVertical: 10,
   },
 });
